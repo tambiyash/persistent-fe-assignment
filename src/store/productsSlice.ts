@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+type Status = 'idle' | 'loading' | 'succeeded' | 'failed';
+type SortBy = 'price' | 'name' | null;
+type SortOrder = 'asc' | 'desc' | null;
+
 interface Product {
   id: number;
   title: string;
@@ -15,14 +19,20 @@ interface Product {
 
 interface ProductsState {
   items: Product[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: Status;
   error: string | null;
+  sortBy: SortBy;
+  sortOrder: SortOrder;
+  sortedItems: Product[];
 }
 
 const initialState: ProductsState = {
   items: [],
   status: 'idle',
   error: null,
+  sortBy: null,
+  sortOrder: null,
+  sortedItems: [],
 };
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
@@ -34,7 +44,28 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    setSort: (state, action) => {
+      const { sortBy, sortOrder } = action.payload;
+      state.sortBy = sortBy;
+      state.sortOrder = sortOrder;
+      
+      if (!sortBy || !sortOrder) {
+        state.sortedItems = state.items;
+        return;
+      }
+
+      state.sortedItems = [...state.items].sort((a, b) => {
+        if (sortBy === 'price') {
+          return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+        } else {
+          return sortOrder === 'asc' 
+            ? a.title.localeCompare(b.title) 
+            : b.title.localeCompare(a.title);
+        }
+      });
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -43,6 +74,7 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.items = action.payload;
+        state.sortedItems = action.payload;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';
@@ -50,5 +82,7 @@ const productsSlice = createSlice({
       });
   },
 });
+
+export const { setSort } = productsSlice.actions;
 
 export default productsSlice.reducer; 

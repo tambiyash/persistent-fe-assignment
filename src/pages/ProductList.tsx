@@ -1,21 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../store/productsSlice';
+import { fetchProducts, setSort } from '../store/productsSlice';
 import { RootState, AppDispatch } from '../store';
 import ProductGrid from '../components/ProductGrid';
 import ProductTable from '../components/ProductTable';
 import ToggleMenu from '../components/ToggleMenu';
 import Spinner from '../components/Spinner';
+
 const ProductList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { items: products, status, error } = useSelector((state: RootState) => state.products);
+  const { sortedItems: products, status, error, sortBy, sortOrder } = useSelector((state: RootState) => state.products);
   const [viewMode, setViewMode] = React.useState<'grid' | 'table'>('grid');
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (status === 'idle') {
+    if (status === 'idle' && !hasFetched.current) {
+      hasFetched.current = true;
       dispatch(fetchProducts());
     }
   }, [status, dispatch]);
+
+  const handleSort = (sortBy: 'price' | 'name', sortOrder: 'asc' | 'desc') => {
+    dispatch(setSort({ sortBy, sortOrder }));
+  };
 
   if (status === 'loading') {
     return (
@@ -32,8 +39,26 @@ const ProductList: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Product List</h1>
-      <div className="mb-4">
+      <div className="mb-4 flex justify-between">
         <ToggleMenu viewMode={viewMode} onToggle={setViewMode} />
+        <div className="flex space-x-2">
+          <button
+            onClick={() => handleSort('price', sortOrder === 'asc' ? 'desc' : 'asc')}
+            className={`px-4 py-2 rounded transition-colors ${
+              sortBy === 'price' ? 'bg-yellow-400 text-gray-900' : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Sort by Price {sortBy === 'price' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </button>
+          <button
+            onClick={() => handleSort('name', sortOrder === 'asc' ? 'desc' : 'asc')}
+            className={`px-4 py-2 rounded transition-colors ${
+              sortBy === 'name' ? 'bg-yellow-400 text-gray-900' : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Sort by Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </button>
+        </div>
       </div>
       {viewMode === 'grid' ? <ProductGrid products={products} /> : <ProductTable products={products} />}
     </div>
