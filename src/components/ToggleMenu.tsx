@@ -8,10 +8,16 @@ interface ToggleMenuProps {
 }
 
 const ToggleMenu: React.FC<ToggleMenuProps> = ({ viewMode, onToggle }) => {
+  const handleClick = (mode: ToggleViewMode) => {
+    if (mode !== viewMode) {
+      onToggle(mode);
+    }
+  };
+
   return (
     <div className="flex space-x-2">
       <button
-        onClick={() => onToggle('grid')}
+        onClick={() => handleClick('grid')}
         className={`px-4 py-2 rounded transition-colors ${
           viewMode === 'grid' ? 'bg-yellow-400 text-gray-900' : 'bg-gray-200 text-gray-700'
         }`}
@@ -19,7 +25,7 @@ const ToggleMenu: React.FC<ToggleMenuProps> = ({ viewMode, onToggle }) => {
         Grid
       </button>
       <button
-        onClick={() => onToggle('table')}
+        onClick={() => handleClick('table')}
         className={`px-4 py-2 rounded transition-colors ${
           viewMode === 'table' ? 'bg-yellow-400 text-gray-900' : 'bg-gray-200 text-gray-700'
         }`}

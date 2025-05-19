@@ -39,12 +39,12 @@ const ProductList: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Product List</h1>
-      <div className="mb-4 flex justify-between">
+      <div className="mb-4 flex flex-col sm:flex-row justify-between gap-4">
         <ToggleMenu viewMode={viewMode} onToggle={setViewMode} />
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => handleSort('price', sortOrder === 'asc' ? 'desc' : 'asc')}
-            className={`px-4 py-2 rounded transition-colors ${
+            className={`px-2 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded transition-colors ${
               sortBy === 'price' ? 'bg-yellow-400 text-gray-900' : 'bg-gray-200 text-gray-700'
             }`}
           >
@@ -52,7 +52,7 @@ const ProductList: React.FC = () => {
           </button>
           <button
             onClick={() => handleSort('name', sortOrder === 'asc' ? 'desc' : 'asc')}
-            className={`px-4 py-2 rounded transition-colors ${
+            className={`px-2 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded transition-colors ${
               sortBy === 'name' ? 'bg-yellow-400 text-gray-900' : 'bg-gray-200 text-gray-700'
             }`}
           >

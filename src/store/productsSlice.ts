@@ -4,7 +4,7 @@ type Status = 'idle' | 'loading' | 'succeeded' | 'failed';
 type SortBy = 'price' | 'name' | null;
 type SortOrder = 'asc' | 'desc' | null;
 
-interface Product {
+export interface Product {
   id: number;
   title: string;
   price: number;
@@ -17,7 +17,7 @@ interface Product {
   };
 }
 
-interface ProductsState {
+export interface ProductsState {
   items: Product[];
   status: Status;
   error: string | null;
