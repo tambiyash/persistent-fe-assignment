@@ -24,6 +24,9 @@ const Home: React.FC = () => {
           <p className="text-gray-600">
             Have questions or need assistance? Reach out to us at <a href="mailto:tambiyash@gmail.com" className="text-yellow-600 hover:underline">tambiyash@gmail.com</a>.
           </p>
+          <p className="text-gray-600">
+            See Yash Tambi's portfolio <a href="https://portfolio-web-phi-six.vercel.app/" className="text-yellow-600 hover:underline">here</a>.
+          </p>
         </section>
       </main>
     </div>
