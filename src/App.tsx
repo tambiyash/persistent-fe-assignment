@@ -1,10 +1,20 @@
 import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
+import ProductList from './pages/ProductList';
+import NotFound from './pages/NotFound';
+import Header from './components/Header';
 
 function App() {
   return (
-    <div className="App">
-      <h1 className="text-3xl font-bold underline">Hello World</h1>
-    </div>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/product-list" element={<ProductList />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
 
